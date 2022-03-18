@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "serviceConfiguration": {
+    "apiName": "notesapp22s",
+    "serviceName": "AppSync",
+    "gqlSchemaPath": "C:\\Users\\noraj\\Documents\\github\\adv-cloud-spring-2022\\notesapp\\amplify\\backend\\api\\notesapp22s\\schema.graphql",
+    "defaultAuthType": {
+      "mode": "API_KEY",
+      "expirationTime": 365,
+      "apiKeyExpirationDate": "2023-03-18T23:53:16.886Z",
+      "keyDescription": "public"
+    }
+  }
+}
