@@ -11,7 +11,7 @@ import { listNotes } from './graphql/queries';
 
 import { v4 as uuid } from 'uuid';
 import { createNote as CreateNote,  deleteNote as DeleteNote, updateNote as UpdateNote  } from './graphql/mutations';
-import { ConsoleLogger } from '@aws-amplify/core';
+import { onCreateNote } from './graphql/subscriptions';
 
 
 
@@ -78,14 +78,24 @@ const  App = () => {
 
   };
 
+  useEffect(() => {
+    fetchNote();
+    const subscription = API.graphql({
+      query: onCreateNote
+    }).subscribe({
+          next: noteData => {
+            console.log(noteData);
+            const note = noteData.value.data.onCreateNote;
+          if (CLIENT_ID === note.clientId) return;
+          dispatch({ type: 'ADD_NOTE', note: note });
+        }
+      });
+      //pass a cleanup function to React.
+      return () => subscription.unsubscribe();
+  }, []);
 
-  useEffect (
-      () => {
-      fetchNote()
 
-      }, []
-  );
-
+  
 
   const createNote = async () =>  {
     const { form } = state;
