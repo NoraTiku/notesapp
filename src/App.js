@@ -10,7 +10,8 @@ import 'antd/dist/antd.css';
 import { listNotes } from './graphql/queries';
 
 import { v4 as uuid } from 'uuid';
-import { createNote as CreateNote,  deleteNote as DeleteNote  } from './graphql/mutations'
+import { createNote as CreateNote,  deleteNote as DeleteNote, updateNote as UpdateNote  } from './graphql/mutations';
+import { ConsoleLogger } from '@aws-amplify/core';
 
 
 
@@ -124,7 +125,7 @@ const  App = () => {
 
     });
 
-    
+
     //Then do the delete through GraphQL mutation.
     try {
       await API.graphql({
@@ -149,6 +150,40 @@ const  App = () => {
 
   };
 
+  const updateNote = async (noteToUpdate) => {
+    //Udate the state and display
+    dispatch({
+      type: "SET_NOTES", notes: state.notes.map(x => ({
+        ...x, completed: x === noteToUpdate ? !x.completed : x.completed
+
+
+
+      }))
+
+    });
+
+    //Then call the backend.
+    try {
+      await API.graphql({
+        query: UpdateNote,
+        variables: {
+          input: {
+            id: noteToUpdate.id,
+            completed: !noteToUpdate.completed
+          }
+        }
+
+
+      });
+    }
+
+
+    catch (err) {
+      console.error("error: ", err)
+    }
+
+  };
+
 
 
 
@@ -159,7 +194,7 @@ const  App = () => {
     dispatch({ type: 'SET_INPUT', name: e.target.name, value: e.target.value 
     });
 
-  }
+  };
 
 
 
@@ -172,7 +207,16 @@ const  App = () => {
           style={styles.p}
           onClick={() => deleteNote(item)} >
             Delete
+          </p> ,
+
+          //another p-tage
+
+          <p style = {styles.p}
+              onClick={() => updateNote(item)}
+          >
+            {item.completed ? 'Mark incomplete' : 'Mark complete'}
           </p>
+
 
 
         ]}
@@ -180,7 +224,7 @@ const  App = () => {
       >
 
         <List.Item.Meta
-          title={item.name}
+          title={`${item.name}${item.completed ? ' (completed)' : ''}`}
           description={item.description}
         />
       </List.Item>
