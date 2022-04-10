@@ -25,11 +25,10 @@ const initialState = {
 };
 
 
-
 function reducer(state, action) {
   switch(action.type) {
     case 'SET_NOTES':
-      return { ...state, notes: action.notes, loading: false }
+      return { ...state, notes: action.notes, loading: false };
 
     case 'ERROR':
       return { ...state, loading: false, error: true };
@@ -114,16 +113,18 @@ const  App = () => {
 
 
 
-  //delete not function
+
+  //delete note function
   const deleteNote = async (noteToDelete) =>  {
 
     //update state and screen
     dispatch({
-      type: "SET_NOTE",
+      type: "SET_NOTES",
       notes: state.notes.filter(x => x !== noteToDelete)
 
     });
 
+    
     //Then do the delete through GraphQL mutation.
     try {
       await API.graphql({
@@ -141,7 +142,7 @@ const  App = () => {
     }
 
     catch (err) {
-      console.error(err)
+      console.error(err);
 
     }
 
